@@ -1,0 +1,40 @@
+{
+    "name": "lemmon/kirby-fontpicker",
+    "description": "Focuses on simplicity and clarity in font selection for Kirby's Panel, backed by privacy-friendly Bunny Fonts.",
+    "license": "MIT",
+    "type": "kirby-plugin",
+    "keywords": [
+        "kirby",
+        "kirby-cms",
+        "kirby-plugin",
+        "fontpicker",
+        "fonts",
+        "bunny-fonts",
+        "panel-field"
+    ],
+    "authors": [
+        {
+            "name": "Jakub Pelák",
+            "email": "jpelak@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/lemmon/kirby-plugin-fontpicker/issues",
+        "source": "https://github.com/lemmon/kirby-plugin-fontpicker"
+    },
+    "require": {
+        "getkirby/composer-installer": "^1.2"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.48"
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "getkirby/composer-installer": true
+        }
+    },
+    "extra": {
+        "installer-name": "fontpicker"
+    }
+}
