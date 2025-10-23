@@ -22,7 +22,7 @@ Kirby::plugin('lemmon/fontpicker', [
                 'placeholder' => function ($placeholder = 'https://fonts.bunny.net/family/roboto') {
                     return $placeholder;
                 },
-                'help' => function ($help = 'Paste the Bunny Fonts family page you want to use.') {
+                'help' => function ($help = 'Paste the Bunny Fonts family URL you want to use. You can explore all fonts at (link: https://fonts.bunny.net/ target: _blank).') {
                     return $help;
                 },
             ],
