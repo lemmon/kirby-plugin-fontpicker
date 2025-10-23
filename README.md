@@ -2,7 +2,7 @@
 
 This Kirby plugin adds a welcoming font picker to the Panel so editors can drop in a favorite web font without touching code. It focuses on simplicity, opinionated defaults, and privacy-friendly integrations like Bunny Fonts to keep typography tweaks approachable for anyone working with predefined templates or themes.
 
-![Font picker screenshot](screenshot.png)
+![Font picker screenshot](assets/screenshot.png)
 
 ## Installation
 
