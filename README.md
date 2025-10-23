@@ -2,6 +2,8 @@
 
 This Kirby plugin adds a welcoming font picker to the Panel so editors can drop in a favorite web font without touching code. It focuses on simplicity, opinionated defaults, and privacy-friendly integrations like Bunny Fonts to keep typography tweaks approachable for anyone working with predefined templates or themes.
 
+![Font picker screenshot](screenshot.png)
+
 ## Installation
 
 ### Composer
@@ -26,13 +28,9 @@ Add the field to a blueprint and configure defaults as needed:
 
 ```yaml
 fields:
-    headline:
-        label: Headline
-        type: text
     website_font:
-        label: Font
+        label: Website Font
         type: fontpicker
-        placeholder: "https://fonts.bunny.net/family/roboto"
 ```
 
 Use the stored value to inject fonts and CSS variables in your templates or snippets. A typical pattern is to inject the link tag in a snippet used by `head.php` and share variables via Kirby’s global data or site options.
@@ -76,7 +74,10 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 
 ## Roadmap
 
--   [ ] Turn pasted Bunny Fonts links into ready-to-use typography tweaks.
 -   [ ] Let editors enter a simple font name or slug instead of a full URL.
+-   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
+-   [ ] Add a command to refresh the Bunny catalog cache on demand.
+-   [ ] Extend `toFontStylesheetUrl()` with optional `weights` and `italics` parameters for per-slot overrides.
+-   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
 -   [ ] Offer variable-style font choices once Bunny Fonts makes them dependable.
 -   [ ] Combine multiple font selections into a single Bunny stylesheet link for leaner page heads.
