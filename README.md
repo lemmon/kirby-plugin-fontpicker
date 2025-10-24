@@ -66,7 +66,7 @@ html {
 
 ## License
 
-MIT License. See `LICENSE` (add one if your project does not already include it) for details.
+MIT License. See `LICENSE` for details.
 
 ---
 
