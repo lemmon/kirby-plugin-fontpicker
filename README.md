@@ -61,7 +61,7 @@ html {
 | ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lemmon.fontpicker.weights`              | `null`  | Restrict the Bunny weights emitted in the stylesheet URL. Leave `null` to request every available weight; set to values like `[400, 700]` to keep the CSS lean.         |
 | `lemmon.fontpicker.cacheTtl`             | `10080` | Cache the Bunny catalog for the given number of minutes (default seven days). Set to `0` to skip caching.                                                               |
-| `lemmon.fontpicker.includeItalic`        | `true`  | Control whether italic variants are requested when available. Set to `false` to emit upright styles only (fonts with no upright style still include italic for safety). |
+| `lemmon.fontpicker.includeItalics`       | `true`  | Control whether italic variants are requested when available. Set to `false` to emit upright styles only (fonts with no upright style still include italics for safety). |
 | `lemmon.fontpicker.disableRemoteCatalog` | `false` | Skip fetching `https://fonts.bunny.net/list` and rely solely on the bundled catalog snapshot. Useful for offline or air-gapped environments.                            |
 
 ## License

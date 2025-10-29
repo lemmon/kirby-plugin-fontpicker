@@ -7,7 +7,7 @@ use Lemmon\Fontpicker\Catalog;
 Kirby::plugin('lemmon/fontpicker', [
     'options' => [
         'weights' => null,
-        'includeItalic' => true,
+        'includeItalics' => true,
         'disableRemoteCatalog' => false,
         'cache.catalog' => [
             'active' => true,
@@ -77,21 +77,21 @@ Kirby::plugin('lemmon/fontpicker', [
                 }
             }
 
-            $hasNormal = in_array('normal', $styles, true);
-            $hasItalic = in_array('italic', $styles, true);
-            $includeItalic = option('lemmon.fontpicker.includeItalic', true);
-            $useItalic = $hasItalic && ($includeItalic || !$hasNormal);
+            $hasNormalStyle = in_array('normal', $styles, true);
+            $hasItalicStyle = in_array('italic', $styles, true);
+            $includeItalics = option('lemmon.fontpicker.includeItalics', true);
+            $useItalics = $hasItalicStyle && ($includeItalics || !$hasNormalStyle);
 
             // TODO: Revisit variable font descriptors once Bunny Fonts publishes reliable ital/wght URLs.
             // Assemble the Bunny Fonts family descriptor (e.g., 400,400i,700).
             $tokens = [];
 
             foreach ($weights as $weight) {
-                if ($hasNormal || !$hasItalic) {
+                if ($hasNormalStyle || !$hasItalicStyle) {
                     $tokens[] = (string) $weight;
                 }
 
-                if ($useItalic) {
+                if ($useItalics) {
                     $tokens[] = $weight . 'i';
                 }
             }
