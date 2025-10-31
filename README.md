@@ -107,8 +107,13 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 ## Roadmap
 
 -   [x] Let editors enter a simple font name or slug instead of a full URL.
+-   [x] Finish the `FontSelection` fluent API, including `withCssVariable()`, `withWeights()`, and `withItalics()` modifiers that no-op safely when a font is invalid.
+-   [x] Normalize weight and italics naming across options and field helpers.
+-   [x] Retire legacy field shortcuts in favor of `$field->toFont()`.
+-   [ ] Introduce `$site->combineFonts()` to merge multiple selections into a single Bunny Fonts request (one preconnect, one stylesheet).
+-   [ ] Ensure the combined renderer skips Bunny links when every selection is invalid while still emitting fallback-only `<style>` tags.
+-   [ ] Expose collection-level render helpers so templates can output links and CSS variables together without duplication.
 -   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
 -   [ ] Add a command to refresh the Bunny catalog cache on demand.
 -   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
 -   [ ] Offer variable-style font choices once Bunny Fonts makes them dependable.
--   [ ] Combine multiple font selections into a single Bunny stylesheet link for leaner page heads.
