@@ -36,15 +36,11 @@ fields:
 Use the stored value to inject fonts and CSS variables in your templates or snippets. A typical pattern is to inject the link tag in a snippet used by `head.php` and share variables via Kirby’s global data or site options.
 
 ```php
-<?php if ($font = $page->website_font())->isValidFont(): ?>
-  <link rel="preconnect" href="https://fonts.bunny.net">
-  <link rel="stylesheet" href="<?= $font->toFontStylesheetUrl() ?>">
-  <style>
-    :root {
-      --website-font: "<?= $font->toFontFamilyName() ?>";
-    }
-  </style>
-<?php endif; ?>
+<?= $page->website_font()
+    ->toFont()
+    ->withCssVariable('--website-font')
+    ->withCssFallbacks('--default-font')
+    ->render() ?>
 ```
 
 Reference the shared variable in your styles (fallback to theme defaults when unset):
@@ -55,14 +51,48 @@ html {
 }
 ```
 
+### Fine-grained control
+
+Prefer to handle each step yourself? Keep the same structure with the new helpers:
+
+```php
+<?php if (($font = $page->website_font()->toFont())->isValid()): ?>
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link rel="stylesheet" href="<?= $font->toStylesheetUrl() ?>">
+  <style>
+    :root {
+      --website-font: "<?= $font->getFamilyName() ?>";
+    }
+  </style>
+<?php endif; ?>
+```
+
+`renderStylesheetLink()` and `render()` include the Bunny Fonts `preconnect` tag by default. Pass `false` (for example, `$font->render(preconnect: false)`) when you aggregate multiple selections yourself.
+
+### FontSelection helpers
+
+Calling `$field->toFont()` returns a `Lemmon\Fontpicker\FontSelection` instance with these primary helpers:
+
+-   `isValid()` — whether the selection resolved to a known Bunny Fonts family.
+-   `getFamilyName()` / `getSlug()` — surface the resolved family identifier for CSS variables, typography helpers, or debugging.
+-   `toStylesheetUrl()` — generate the Bunny Fonts CSS URL, honoring weight and italic filters.
+-   `withWeights(...$weights)` — limit requested weights (accepts scalars or arrays).
+-   `withItalics(bool $include)` — force italics on/off for this selection.
+-   `withCssVariable(string $variable)` — declare the CSS custom property to populate.
+-   `withCssFallbacks(...$tokens)` — append fallback tokens (e.g. `--default-font`, `serif`).
+-   `renderCssVariables()` — output a `<style>` block with the configured variable and fallbacks.
+-   `renderStylesheetLink(bool $preconnect = true)` — output Bunny Fonts `<link>` tags when the selection is valid.
+-   `render(bool $preconnect = true)` — combine the link and CSS variable output (skips empty pieces automatically).
+-   `getValue()` — access the raw field value exactly as entered by the editor.
+
 ## Configuration
 
-| Option                                   | Default | Purpose                                                                                                                                                                 |
-| ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lemmon.fontpicker.weights`              | `null`  | Restrict the Bunny weights emitted in the stylesheet URL. Leave `null` to request every available weight; set to values like `[400, 700]` to keep the CSS lean.         |
-| `lemmon.fontpicker.cacheTtl`             | `10080` | Cache the Bunny catalog for the given number of minutes (default seven days). Set to `0` to skip caching.                                                               |
+| Option                                   | Default | Purpose                                                                                                                                                                  |
+| ---------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `lemmon.fontpicker.weights`              | `null`  | Restrict the Bunny weights emitted in the stylesheet URL. Leave `null` to request every available weight; set to values like `[400, 700]` to keep the CSS lean.          |
+| `lemmon.fontpicker.cacheTtl`             | `10080` | Cache the Bunny catalog for the given number of minutes (default seven days). Set to `0` to skip caching.                                                                |
 | `lemmon.fontpicker.includeItalics`       | `true`  | Control whether italic variants are requested when available. Set to `false` to emit upright styles only (fonts with no upright style still include italics for safety). |
-| `lemmon.fontpicker.disableRemoteCatalog` | `false` | Skip fetching `https://fonts.bunny.net/list` and rely solely on the bundled catalog snapshot. Useful for offline or air-gapped environments.                            |
+| `lemmon.fontpicker.disableRemoteCatalog` | `false` | Skip fetching `https://fonts.bunny.net/list` and rely solely on the bundled catalog snapshot. Useful for offline or air-gapped environments.                             |
 
 ## License
 
@@ -77,7 +107,7 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 -   [ ] Let editors enter a simple font name or slug instead of a full URL.
 -   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
 -   [ ] Add a command to refresh the Bunny catalog cache on demand.
--   [ ] Extend `toFontStylesheetUrl()` with optional `weights` and `italics` parameters for per-slot overrides.
+-   [ ] Extend `FontSelection::toStylesheetUrl()` with optional per-slot overrides for weights and italics.
 -   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
 -   [ ] Offer variable-style font choices once Bunny Fonts makes them dependable.
 -   [ ] Combine multiple font selections into a single Bunny stylesheet link for leaner page heads.

@@ -26,6 +26,7 @@
 - Name Kirby blueprints and snippets using lowercase single-word identifiers (`fontpicker.yml`, `fontpicker.php`) to align with the plugin’s `fontpicker` namespace.
 - Stick to ASCII punctuation in code, docs, and comments (prefer `--` over an em dash) so diffs stay predictable.
 - Document non-trivial helpers with concise docblocks. Prefer descriptive method names such as `resolveFontOptions`.
+- Keep named parameters succinct (`$preconnect` over `$includePreconnect`) to make chained method calls readable.
 - Reserve emojis for rare emphasis; moderate use is fine, but avoid emoji-driven lists.
 - Use GitHub-style unchecked checkboxes (`- [ ]`) when documenting roadmap items to keep documentation consistent.
 
