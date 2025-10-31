@@ -33,6 +33,8 @@ fields:
         type: fontpicker
 ```
 
+Editors can paste a full Bunny Fonts URL (`https://fonts.bunny.net/family/roboto`), type a family name like `Roboto Mono`, or enter a slug such as `roboto-mono`.
+
 Use the stored value to inject fonts and CSS variables in your templates or snippets. A typical pattern is to inject the link tag in a snippet used by `head.php` and share variables via Kirby’s global data or site options.
 
 ```php
@@ -104,10 +106,9 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 
 ## Roadmap
 
--   [ ] Let editors enter a simple font name or slug instead of a full URL.
+-   [x] Let editors enter a simple font name or slug instead of a full URL.
 -   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
 -   [ ] Add a command to refresh the Bunny catalog cache on demand.
--   [ ] Extend `FontSelection::toStylesheetUrl()` with optional per-slot overrides for weights and italics.
 -   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
 -   [ ] Offer variable-style font choices once Bunny Fonts makes them dependable.
 -   [ ] Combine multiple font selections into a single Bunny stylesheet link for leaner page heads.

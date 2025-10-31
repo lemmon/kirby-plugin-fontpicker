@@ -3,6 +3,7 @@
 namespace Lemmon\Fontpicker;
 
 use Kirby\Toolkit\Remote;
+use Kirby\Toolkit\Str;
 use Throwable;
 
 /**
@@ -72,23 +73,44 @@ class Catalog
             return null;
         }
 
-        if (isset(self::$entries[$value])) {
-            return self::$entries[$value];
+        if ($entry = self::entriesFor($value)) {
+            return $entry;
         }
 
         $normalized = strtolower($value);
 
-        if (isset(self::$entries[$normalized])) {
-            return self::$entries[$normalized];
-        }
-
-        $entry = self::find($normalized);
-
-        if ($entry !== null) {
+        if ($entry = self::entriesFor($normalized)) {
             self::$entries[$value] = $entry;
             return $entry;
         }
 
+        if ($entry = self::find($normalized)) {
+            self::$entries[$value] = $entry;
+            self::$entries[$normalized] = $entry;
+            return $entry;
+        }
+
+        $slugCandidate = Str::slug($value);
+
+        if ($slugCandidate !== '' && $slugCandidate !== $normalized && $entry = self::find($slugCandidate)) {
+            self::$entries[$value] = $entry;
+            self::$entries[$slugCandidate] = $entry;
+            return $entry;
+        }
+
+        if (self::looksLikeUrl($value) && $entry = self::parseBunnyUrl($value)) {
+            self::$entries[$value] = $entry;
+            return $entry;
+        }
+
+        return self::findBySlug(Str::slug($value), $value);
+    }
+
+    /**
+     * Attempt to resolve a Bunny Fonts URL into a catalog entry.
+     */
+    protected static function parseBunnyUrl(string $value): ?array
+    {
         $parsed = parse_url($value);
 
         if ($parsed === false) {
@@ -108,10 +130,41 @@ class Catalog
         }
 
         $slug = strtolower($matches[1]);
+
+        return self::find($slug);
+    }
+
+    /**
+     * Retrieve a cached entry when available.
+     */
+    protected static function entriesFor(string $key): ?array
+    {
+        return self::$entries[$key] ?? null;
+    }
+
+    /**
+     * Detect whether a value looks like a URL before parsing.
+     */
+    protected static function looksLikeUrl(string $value): bool
+    {
+        return str_contains($value, '://') || str_contains($value, 'fonts.bunny.net/');
+    }
+
+    /**
+     * Locate a font by slug, optionally caching under the original key.
+     */
+    protected static function findBySlug(string $slug, ?string $original = null): ?array
+    {
+        $slug = strtolower(trim($slug));
+
+        if ($slug === '') {
+            return null;
+        }
+
         $entry = self::find($slug);
 
-        if ($entry !== null) {
-            self::$entries[$value] = $entry;
+        if ($entry !== null && $original !== null) {
+            self::$entries[$original] = $entry;
         }
 
         return $entry;
