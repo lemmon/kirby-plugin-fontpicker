@@ -2,9 +2,11 @@
 
 require_once __DIR__ . '/src/Catalog.php';
 require_once __DIR__ . '/src/FontSelection.php';
+require_once __DIR__ . '/src/FontCollection.php';
 
 use Lemmon\Fontpicker\Catalog;
 use Lemmon\Fontpicker\FontSelection;
+use Lemmon\Fontpicker\FontCollection;
 
 Kirby::plugin('lemmon/fontpicker', [
     'options' => [
@@ -16,6 +18,15 @@ Kirby::plugin('lemmon/fontpicker', [
             'type' => 'file',
         ],
         'cacheTtl' => Catalog::CACHE_DEFAULT_TTL,
+    ],
+    'siteMethods' => [
+        'fontCollection' => function (...$inputs) {
+            if (empty($inputs)) {
+                return new FontCollection();
+            }
+
+            return FontCollection::from($inputs);
+        },
     ],
     'fields' => [
         'fontpicker' => [

@@ -92,48 +92,40 @@ class FontSelection
      */
     public function toStylesheetUrl(): ?string
     {
+        $descriptor = $this->toStylesheetDescriptor();
+
+        if ($descriptor === null) {
+            return null;
+        }
+
+        $familyParam = rawurlencode($descriptor['slug']) . ':' . implode(',', $descriptor['tokens']);
+
+        return 'https://fonts.bunny.net/css?family=' . $familyParam;
+    }
+
+    /**
+     * Returns the Bunny Fonts family descriptor (slug + tokens).
+     *
+     * @return array{slug: string, tokens: array<int, string>}|null
+     */
+    public function toStylesheetDescriptor(): ?array
+    {
         $slug = $this->getSlug();
 
         if ($slug === null) {
             return null;
         }
 
-        $weights = $this->resolveWeights();
+        $tokens = $this->buildStylesheetTokens();
 
-        if (empty($weights)) {
+        if ($tokens === []) {
             return null;
         }
 
-        $styles = array_map(
-            static fn ($style) => strtolower((string) $style),
-            $this->entry['styles'] ?? []
-        );
-
-        $hasNormalStyle = in_array('normal', $styles, true);
-        $hasItalicStyle = in_array('italic', $styles, true);
-
-        $useItalics = $hasItalicStyle && ($this->includeItalics || !$hasNormalStyle);
-        $tokens = [];
-
-        foreach ($weights as $weight) {
-            if ($hasNormalStyle || !$hasItalicStyle) {
-                $tokens[] = (string) $weight;
-            }
-
-            if ($useItalics) {
-                $tokens[] = $weight . 'i';
-            }
-        }
-
-        $tokens = array_values(array_unique($tokens));
-
-        if (empty($tokens)) {
-            return null;
-        }
-
-        $familyParam = rawurlencode($slug) . ':' . implode(',', $tokens);
-
-        return 'https://fonts.bunny.net/css?family=' . $familyParam;
+        return [
+            'slug' => $slug,
+            'tokens' => $tokens,
+        ];
     }
 
     /**
@@ -232,38 +224,38 @@ class FontSelection
      */
     public function renderCssVariables(): ?string
     {
+        $definition = $this->getCssVariableDefinition();
+
+        if ($definition === null) {
+            return null;
+        }
+
+        $line = '    ' . $definition['variable'] . ': ' . implode(', ', $definition['values']) . ';';
+
+        return "<style>\n:root {\n" . $line . "\n}\n</style>";
+    }
+
+    /**
+     * Return the configured CSS variable definition.
+     *
+     * @return array{variable: string, values: array<int, string>}|null
+     */
+    public function getCssVariableDefinition(): ?array
+    {
         if ($this->cssVariable === null) {
             return null;
         }
 
-        $lines = [];
-        $familyToken = null;
+        $values = $this->buildCssVariableValues();
 
-        if ($this->isValid()) {
-            $family = $this->getFamilyName();
-
-            if ($family !== null) {
-                $familyToken = '"' . addcslashes($family, '"\\') . '"';
-            }
-        }
-
-        $values = [];
-
-        if ($familyToken !== null) {
-            $values[] = $familyToken;
-        }
-
-        foreach ($this->cssFallbacks as $fallback) {
-            $values[] = $fallback;
-        }
-
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
 
-        $lines[] = '    ' . $this->cssVariable . ': ' . implode(', ', $values) . ';';
-
-        return "<style>\n:root {\n" . implode("\n", $lines) . "\n}\n</style>";
+        return [
+            'variable' => $this->cssVariable,
+            'values' => $values,
+        ];
     }
 
     /**
@@ -405,5 +397,70 @@ class FontSelection
         }
 
         return $token;
+    }
+
+    /**
+     * Build the Bunny Fonts tokens (e.g., 400,400i,700) for this selection.
+     *
+     * @return array<int, string>
+     */
+    protected function buildStylesheetTokens(): array
+    {
+        $weights = $this->resolveWeights();
+
+        if ($weights === []) {
+            return [];
+        }
+
+        $styles = array_map(
+            static fn ($style) => strtolower((string) $style),
+            $this->entry['styles'] ?? []
+        );
+
+        $hasNormalStyle = in_array('normal', $styles, true);
+        $hasItalicStyle = in_array('italic', $styles, true);
+        $useItalics = $hasItalicStyle && ($this->includeItalics || !$hasNormalStyle);
+
+        $tokens = [];
+
+        foreach ($weights as $weight) {
+            if ($hasNormalStyle || !$hasItalicStyle) {
+                $tokens[] = (string) $weight;
+            }
+
+            if ($useItalics) {
+                $tokens[] = $weight . 'i';
+            }
+        }
+
+        return array_values(array_unique($tokens));
+    }
+
+    /**
+     * Assemble the CSS variable value list (family + fallbacks).
+     *
+     * @return array<int, string>
+     */
+    protected function buildCssVariableValues(): array
+    {
+        if ($this->cssVariable === null) {
+            return [];
+        }
+
+        $values = [];
+
+        if ($this->isValid()) {
+            $family = $this->getFamilyName();
+
+            if ($family !== null) {
+                $values[] = '"' . addcslashes($family, '"\\') . '"';
+            }
+        }
+
+        foreach ($this->cssFallbacks as $fallback) {
+            $values[] = $fallback;
+        }
+
+        return $values;
     }
 }

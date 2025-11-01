@@ -78,6 +78,7 @@ Calling `$field->toFont()` returns a `Lemmon\Fontpicker\FontSelection` instance 
 -   `isValid()` — whether the selection resolved to a known Bunny Fonts family.
 -   `getFamilyName()` / `getSlug()` — surface the resolved family identifier for CSS variables, typography helpers, or debugging.
 -   `toStylesheetUrl()` — generate the Bunny Fonts CSS URL, honoring weight and italic filters.
+-   `toStylesheetDescriptor()` — fetch the raw slug/tokens array used when combining fonts.
 -   `withWeights(...$weights)` — limit requested weights (accepts scalars or arrays).
 -   `withItalics(bool $include)` — force italics on/off for this selection.
 -   `withCssVariable(string $variable)` — declare the CSS custom property to populate.
@@ -85,7 +86,28 @@ Calling `$field->toFont()` returns a `Lemmon\Fontpicker\FontSelection` instance 
 -   `renderCssVariables()` — output a `<style>` block with the configured variable and fallbacks.
 -   `renderStylesheetLink(bool $preconnect = true)` — output Bunny Fonts `<link>` tags when the selection is valid.
 -   `render(bool $preconnect = true)` — combine the link and CSS variable output (skips empty pieces automatically).
+-   `getCssVariableDefinition()` — return the variable/value list for aggregation helpers.
 -   `getValue()` — access the raw field value exactly as entered by the editor.
+
+### Combining multiple fonts
+
+Aggregate multiple selections into a single Bunny request:
+
+```php
+<?= $site->fontCollection(
+    $site->theme_default_font()->toFont()
+        ->withCssVariable('--font-default')
+        ->withCssFallbacks('--font-sans'),
+    $site->theme_headings_font()->toFont()
+        ->withCssVariable('--font-heading'),
+    $site->theme_monospace_font()->toFont()
+        ->withCssVariable('--font-mono')
+        ->withWeights(400)
+        ->withItalics(false),
+)->render() ?>
+```
+
+`$site->fontCollection()` accepts individual selections or nested arrays, dedupes families, and emits one preconnect tag, one combined stylesheet, and a single `<style>` block. If every font is invalid, the collection still renders fallback-only CSS variables when available.
 
 ## Configuration
 
@@ -110,9 +132,9 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 -   [x] Finish the `FontSelection` fluent API, including `withCssVariable()`, `withWeights()`, and `withItalics()` modifiers that no-op safely when a font is invalid.
 -   [x] Normalize weight and italics naming across options and field helpers.
 -   [x] Retire legacy field shortcuts in favor of `$field->toFont()`.
--   [ ] Introduce `$site->combineFonts()` to merge multiple selections into a single Bunny Fonts request (one preconnect, one stylesheet).
--   [ ] Ensure the combined renderer skips Bunny links when every selection is invalid while still emitting fallback-only `<style>` tags.
--   [ ] Expose collection-level render helpers so templates can output links and CSS variables together without duplication.
+-   [x] Introduce `$site->fontCollection()` to merge multiple selections into a single Bunny Fonts request (one preconnect, one stylesheet).
+-   [x] Ensure the combined renderer skips Bunny links when every selection is invalid while still emitting fallback-only `<style>` tags.
+-   [x] Expose collection-level render helpers so templates can output links and CSS variables together without duplication.
 -   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
 -   [ ] Add a command to refresh the Bunny catalog cache on demand.
 -   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
