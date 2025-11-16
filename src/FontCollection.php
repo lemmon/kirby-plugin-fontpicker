@@ -91,21 +91,21 @@ class FontCollection
             return null;
         }
 
-        $params = [];
+        $descriptors = [];
 
         foreach ($families as $slug => $tokens) {
             if ($tokens === []) {
                 continue;
             }
 
-            $params[] = 'family=' . rawurlencode($slug) . ':' . implode(',', $tokens);
+            $descriptors[] = rawurlencode($slug) . ':' . implode(',', $tokens);
         }
 
-        if ($params === []) {
+        if ($descriptors === []) {
             return null;
         }
 
-        return 'https://fonts.bunny.net/css?' . implode('&', $params);
+        return 'https://fonts.bunny.net/css?family=' . implode('|', $descriptors);
     }
 
     /**
