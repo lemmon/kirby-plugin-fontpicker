@@ -74,7 +74,7 @@ class FontSelection
     }
 
     /**
-     * Returns the font family name or null when the selection is invalid.
+     * Returns the font family name or null when the selection is invalid or unsafe.
      */
     public function getFamilyName(): ?string
     {
@@ -84,7 +84,11 @@ class FontSelection
 
         $family = $this->entry['familyName'] ?? null;
 
-        return is_string($family) && $family !== '' ? $family : null;
+        if (!is_string($family) || $family === '') {
+            return null;
+        }
+
+        return $this->containsUnsafeCssValue($family) ? null : $family;
     }
 
     /**
@@ -458,9 +462,21 @@ class FontSelection
         }
 
         foreach ($this->cssFallbacks as $fallback) {
+            if ($this->containsUnsafeCssValue($fallback)) {
+                continue;
+            }
+
             $values[] = $fallback;
         }
 
         return $values;
+    }
+
+    /**
+     * Treat raw "<" as unsafe for style blocks.
+     */
+    protected function containsUnsafeCssValue(string $value): bool
+    {
+        return str_contains($value, '<');
     }
 }

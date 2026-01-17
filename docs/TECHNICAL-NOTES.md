@@ -5,6 +5,7 @@
 - Catalog entries include `weights`, `styles`, and an `isVariable` flag. The field methods rely on these keys to decide how to build stylesheet URLs and expose font metadata.
 - `Lemmon\\Fontpicker\\FontSelection` wraps a single field value and exposes helpers such as `isValid()`, `getFamilyName()`, `toStylesheetUrl()`, HTML renderers (`renderStylesheetLink(bool $preconnect = true)`, `renderCssVariables()`, `render(bool $preconnect = true)`), and fluent modifiers (`withCssVariable()`, `withCssFallbacks()`, `withWeights()`, `withItalics()`). Field methods now expose only `$field->toFont()`; legacy shortcuts were removed.
 - CSS variable helpers manage a single custom property per selection: call `withCssVariable('--font-default')` and optionally `withCssFallbacks('--font-sans', 'serif')` before rendering with `renderCssVariables()`.
+- `FontSelection` treats catalog family names containing `<` as unsafe and invalid, and skips CSS fallback tokens that contain `<` to avoid breaking out of `<style>` blocks.
 - `Lemmon\\Fontpicker\\FontCollection` aggregates multiple selections, dedupes families, and renders a single Bunny stylesheet link and `<style>` block. `$site->fontCollection()` instantiates collections with individual selections or nested arrays.
 - `Catalog::parse()` accepts Bunny URLs, raw slugs, family names, and arbitrary strings that can be slugified via `Kirby\Toolkit\Str::slug()`.
 
