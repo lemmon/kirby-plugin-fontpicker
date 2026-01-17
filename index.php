@@ -13,6 +13,12 @@ Kirby::plugin('lemmon/fontpicker', [
         'weights' => null,
         'includeItalics' => true,
         'disableRemoteCatalog' => false,
+        /**
+         * Cache configuration.
+         *
+         * NOTE: Kirby maps plugin cache options from `cache.<name>` to
+         * `kirby()->cache('<plugin>.<name>')` based on the plugin name.
+         */
         'cache.catalog' => [
             'active' => true,
             'type' => 'file',
