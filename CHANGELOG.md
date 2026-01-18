@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Validate font selections in the Panel, with guidance for unresolved or unsafe catalog entries.
+
 ### Security
 - Treat catalog family names containing `<` as invalid and skip CSS fallback tokens with `<` to prevent breaking out of `<style>` blocks.
 

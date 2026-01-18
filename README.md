@@ -137,5 +137,5 @@ Questions, issues, or ideas? File them in the repository or reach out; this plug
 -   [x] Expose collection-level render helpers so templates can output links and CSS variables together without duplication.
 -   [ ] Build a Panel preview that renders the selected font inline for quick feedback.
 -   [ ] Add a command to refresh the Bunny catalog cache on demand.
--   [ ] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
+-   [x] Surface validation errors in the Panel when a font selection cannot be resolved, with actionable guidance.
 -   [ ] Offer variable-style font choices once Bunny Fonts makes them dependable.
