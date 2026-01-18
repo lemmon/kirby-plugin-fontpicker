@@ -37,6 +37,9 @@
 
 ## Commit & Pull Request Guidelines
 - Follow the Conventional Commits spec (`fix:`, `refactor:`, `docs:`) and keep messages in the imperative mood.
+- Use concise Conventional Commit summaries: `<type>(<scope>): <short action>`. Avoid verbose release blurbs in commit messages; keep release notes in CHANGELOG/release tagging.
 - Ensure each commit addresses a single concern; couple tests with implementation, but leave unrelated formatting for a separate change.
 - Reference related issues in commit bodies using `Refs #123` when applicable.
-- PRs must summarize intent, list functional changes, and include screenshots or GIFs showing updated Kirby panel experiences when UI is affected.
+- PRs must summarize intent, list functional changes, and include screenshots or GIFs when UI elements are added.
+- Prefer annotated tags for releases (author, date, message/signing) over lightweight tags.
+- Annotated tags should use `vX.Y.Z - <concise headline>`; keep detailed notes in CHANGELOG/releases.
